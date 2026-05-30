@@ -65,6 +65,11 @@ button:hover {
   background: #1d4ed8;
 }
 
+button:disabled {
+  background: #6b7280;
+  cursor: not-allowed;
+}
+
 .popup {
   position: fixed;
   top: 0;
@@ -114,6 +119,10 @@ input {
   border-radius: 12px;
   background: white;
   padding: 10px;
+}
+
+#uses-left {
+  color: #d1d5db;
 }
 
 .hidden {
