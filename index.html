@@ -3,30 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Chris 3DS Games</title>
+
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
   <header>
     <h1>Chris 3DS Games</h1>
-    <p>Enter your code to unlock a QR download for my original 3DS games.</p>
+    <p>Unlock QR downloads for my original 3DS homebrew games.</p>
   </header>
 
   <main class="game-grid">
 
     <div class="game-card">
-      <img src="images/game1-cover.png" alt="Game 1 Cover">
+      <img src="images/galaxy-runner-cover.png" alt="Galaxy Runner 3D Cover">
       <h2>Galaxy Runner 3D</h2>
       <p>A fast space runner made for 3DS.</p>
-      <button onclick="openUnlock('galaxy-runner')">Unlock with Code</button>
+      <button onclick="openUnlock('galaxy-runner', 'Galaxy Runner 3D')">
+        Unlock with Code
+      </button>
     </div>
 
     <div class="game-card">
-      <img src="images/game2-cover.png" alt="Game 2 Cover">
+      <img src="images/zombie-hallway-cover.png" alt="Zombie Hallway Cover">
       <h2>Zombie Hallway</h2>
-      <p>A small survival game for 3DS.</p>
-      <button onclick="openUnlock('zombie-hallway')">Unlock with Code</button>
+      <p>A small survival game made for 3DS.</p>
+      <button onclick="openUnlock('zombie-hallway', 'Zombie Hallway')">
+        Unlock with Code
+      </button>
     </div>
 
   </main>
@@ -36,17 +42,19 @@
       <button class="close-btn" onclick="closePopup()">×</button>
 
       <h2 id="popup-title">Unlock Game</h2>
-      <p>Enter your download code below.</p>
+      <p>Enter your code below.</p>
 
-      <input id="code-input" type="text" placeholder="Enter code" />
-      <button onclick="checkCode()">Submit Code</button>
+      <input id="code-input" type="text" placeholder="Example: CHRIS-A7K9P2" />
+
+      <button id="submit-btn" onclick="redeemCode()">Submit Code</button>
 
       <p id="message"></p>
 
       <div id="qr-section" class="hidden">
-        <h3>Code accepted!</h3>
+        <h3 id="qr-title">QR Code</h3>
         <p>Scan this QR code with your 3DS.</p>
         <img id="qr-image" src="" alt="Game QR Code">
+        <p id="uses-left"></p>
       </div>
     </div>
   </div>
