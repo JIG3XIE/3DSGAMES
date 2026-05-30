@@ -1,88 +1,88 @@
-let selectedGame = null;
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxEKxNFSRjOJW5xdSV-ixOda6sN-5ZJV5h688wE315b8b0MdJ6qts7Cd3UOeySywUJvRA/exec";
 
-// These are SHA-256 hashed versions of your codes.
-// Do NOT put your real codes directly here.
-const games = {
-  "galaxy-runner": {
-    title: "Galaxy Runner 3D",
-    qrImage: "images/game1-qr.png",
-    validCodeHashes: [
-      "PUT_HASHED_CODE_HERE",
-      "PUT_ANOTHER_HASHED_CODE_HERE"
-    ]
-  },
+let selectedGameId = null;
+let selectedGameTitle = null;
 
-  "zombie-hallway": {
-    title: "Zombie Hallway",
-    qrImage: "images/game2-qr.png",
-    validCodeHashes: [
-      "PUT_HASHED_CODE_HERE"
-    ]
-  }
-};
+function openUnlock(gameId, gameTitle) {
+  selectedGameId = gameId;
+  selectedGameTitle = gameTitle;
 
-function openUnlock(gameId) {
-  selectedGame = gameId;
-
-  const popup = document.getElementById("popup");
-  const title = document.getElementById("popup-title");
-  const message = document.getElementById("message");
-  const input = document.getElementById("code-input");
-  const qrSection = document.getElementById("qr-section");
-
-  title.textContent = "Unlock " + games[gameId].title;
-  message.textContent = "";
-  input.value = "";
-  qrSection.classList.add("hidden");
-
-  popup.classList.remove("hidden");
+  document.getElementById("popup-title").textContent = "Unlock " + gameTitle;
+  document.getElementById("code-input").value = "";
+  document.getElementById("message").textContent = "";
+  document.getElementById("qr-section").classList.add("hidden");
+  document.getElementById("popup").classList.remove("hidden");
 }
 
 function closePopup() {
   document.getElementById("popup").classList.add("hidden");
 }
 
-async function checkCode() {
-  const input = document.getElementById("code-input").value.trim();
+async function redeemCode() {
+  const codeInput = document.getElementById("code-input");
   const message = document.getElementById("message");
+  const submitBtn = document.getElementById("submit-btn");
   const qrSection = document.getElementById("qr-section");
   const qrImage = document.getElementById("qr-image");
+  const qrTitle = document.getElementById("qr-title");
+  const usesLeft = document.getElementById("uses-left");
 
-  if (!selectedGame) {
-    message.textContent = "No game selected.";
-    message.style.color = "#f87171";
+  const code = codeInput.value.trim();
+
+  if (!selectedGameId) {
+    showMessage("No game selected.", "error");
     return;
   }
 
-  if (input === "") {
-    message.textContent = "Please enter a code.";
-    message.style.color = "#f87171";
+  if (!code) {
+    showMessage("Please enter a code.", "error");
     return;
   }
 
-  const enteredHash = await sha256(input);
-  const game = games[selectedGame];
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Checking...";
+  qrSection.classList.add("hidden");
 
-  if (game.validCodeHashes.includes(enteredHash)) {
-    message.textContent = "Code accepted.";
-    message.style.color = "#4ade80";
+  try {
+    const response = await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        code: code,
+        gameId: selectedGameId
+      })
+    });
 
-    qrImage.src = game.qrImage;
-    qrSection.classList.remove("hidden");
-  } else {
-    message.textContent = "Invalid code.";
-    message.style.color = "#f87171";
-    qrSection.classList.add("hidden");
+    const result = await response.json();
+
+    if (result.success) {
+      showMessage(result.message, "success");
+
+      qrTitle.textContent = result.gameTitle + " QR Code";
+      qrImage.src = result.qrImage;
+      usesLeft.textContent = "Uses left on this code: " + result.usesLeft;
+
+      qrSection.classList.remove("hidden");
+    } else {
+      showMessage(result.message, "error");
+    }
+
+  } catch (error) {
+    showMessage("Connection error. Please try again.", "error");
+    console.error(error);
   }
+
+  submitBtn.disabled = false;
+  submitBtn.textContent = "Submit Code";
 }
 
-async function sha256(text) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(text);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
+function showMessage(text, type) {
+  const message = document.getElementById("message");
 
-  return hashArray
-    .map(byte => byte.toString(16).padStart(2, "0"))
-    .join("");
+  message.textContent = text;
+
+  if (type === "success") {
+    message.style.color = "#4ade80";
+  } else {
+    message.style.color = "#f87171";
+  }
 }
