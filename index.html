@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chris 3DS Games</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <h1>Chris 3DS Games</h1>
+    <p>Enter your code to unlock a QR download for my original 3DS games.</p>
+  </header>
+
+  <main class="game-grid">
+
+    <div class="game-card">
+      <img src="images/game1-cover.png" alt="Game 1 Cover">
+      <h2>Galaxy Runner 3D</h2>
+      <p>A fast space runner made for 3DS.</p>
+      <button onclick="openUnlock('galaxy-runner')">Unlock with Code</button>
+    </div>
+
+    <div class="game-card">
+      <img src="images/game2-cover.png" alt="Game 2 Cover">
+      <h2>Zombie Hallway</h2>
+      <p>A small survival game for 3DS.</p>
+      <button onclick="openUnlock('zombie-hallway')">Unlock with Code</button>
+    </div>
+
+  </main>
+
+  <div id="popup" class="popup hidden">
+    <div class="popup-box">
+      <button class="close-btn" onclick="closePopup()">×</button>
+
+      <h2 id="popup-title">Unlock Game</h2>
+      <p>Enter your download code below.</p>
+
+      <input id="code-input" type="text" placeholder="Enter code" />
+      <button onclick="checkCode()">Submit Code</button>
+
+      <p id="message"></p>
+
+      <div id="qr-section" class="hidden">
+        <h3>Code accepted!</h3>
+        <p>Scan this QR code with your 3DS.</p>
+        <img id="qr-image" src="" alt="Game QR Code">
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2026 Chris 3DS Games. Original homebrew games only.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
